@@ -53,5 +53,5 @@ jobs:
         with:
           app-name: 'Digicare30A'
           slot-name: 'Production'
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_2BF704A99FC34D998E83CDFCA41A39E7 }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_99850A047EFF47348E9B8B0B9056CE66 }}
           package: .
