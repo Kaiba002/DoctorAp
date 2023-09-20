@@ -1,0 +1,260 @@
+﻿@model IEnumerable<DoctorAp.Models.ItemsLead>
+
+@{
+    ViewData["Title"] = "Index";
+    decimal totalCost = 0; // Initialize the total cost to zero
+}
+
+<h1>Purchase Supplies</h1>
+
+<p>
+    <a asp-action="Create" class="btn btn-primary"> Add to Cart </a>
+</p>
+
+
+<form asp-action="Create">
+    <input type="hidden" id="selectedItem" name="Item" />
+</form>
+
+
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Item)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Quantity)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CostPerItem)
+            </th>
+            <th>
+                Total Cost
+            </th>
+            <th>
+                Actions
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Item)
+                </td>
+                <td>
+                    <div class="input-group">
+                        <button class="btn btn-sm btn-success" onclick="increaseQuantity(@item.Id)">+</button>
+                        <input type="text" class="form-control" id="Quantity_@item.Id" name="Quantity" value="@item.Quantity" oninput="updateTotalCost(@item.Id)" />
+                        <button class="btn btn-sm btn-danger" onclick="decreaseQuantity(@item.Id)">-</button>
+                    </div>
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CostPerItem)
+                </td>
+                <td id="TotalCost_@item.Id">
+                    @(item.CostPerItem * item.Quantity)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-primary">Edit</a>
+                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-secondary">Details</a>
+                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger">Delete</a>
+                </td>
+            </tr>
+            @if (item.Item == "Concerta")
+            {
+                <tr>
+                    <td colspan="5">
+                        <strong>Description:</strong> CONCERTA is indicated for the treatment of Attention Deficit Hyperactivity Disorder (ADHD). A diagnosis of Attention Deficit Hyperactivity Disorder (ADHD; DSM-IV) implies the presence of hyperactive-impulsive or inattentive symptoms that caused impairment and were present before age 7 years.
+                        <br />
+                        <img src="https://images-vitau.s3-us-west-1.amazonaws.com/7501109904167.jpg" alt="Concerta Image" width="176" height="176" />
+                    </td>
+                </tr>
+            }
+
+            @if (item.Item == "Advil")
+            {
+                <tr>
+                    <td colspan="5">
+                        <strong>Description:</strong> Advil is a nonsteroidal anti-inflammatory drug (NSAID). Ibuprofen works by reducing hormones that cause inflammation and pain in the body. Advil is used to reduce fever and treat pain or inflammation caused by many conditions such as headache, toothache, back pain, arthritis, menstrual cramps, or minor injury.
+                        <br />
+                        <img src="https://media.istockphoto.com/id/500922895/photo/advil.jpg?s=2048x2048&w=is&k=20&c=Uv6hYmlz54EpioCBDNN-5Dt1rro9T3O9o7YI-Tit6zI=" alt="Advil Image" width="176" height="176" />
+                    </td>
+                </tr>
+            }
+            @if (item.Item == "Amoxicillin")
+            {
+                <tr>
+                    <td colspan="5">
+                        <strong>Description:</strong> Amoxicillin is an antibiotic used to treat a wide range of bacterial infections. It works by stopping the growth of bacteria. This medication is commonly used to treat infections of the respiratory tract, ear, nose, throat, skin, and urinary tract.
+                        <br />
+                        <img src="https://www.farrislabs.com/cdn/shop/products/1089886.webp?v=1673542131" alt="Amoxicillin  Image" width="176" height="176" />
+                    </td>
+                </tr>
+            }
+            @if (item.Item == "Aspirin")
+            {
+                <tr>
+                    <td colspan="5">
+                        <strong>Description:</strong> Aspirin is a nonsteroidal anti-inflammatory drug (NSAID) that works by reducing substances in the body that cause pain and inflammation. It is used to treat pain, and reduce fever or inflammation caused by many conditions such as headache, toothache, back pain, arthritis, menstrual cramps, or minor injury.
+                        <br />
+                        <img src="https://m.media-amazon.com/images/I/511Ia3CuWrL.jpg" alt="Aspirin  Image" width="176" height="176" />
+                    </td>
+                </tr>
+            }
+            @if (item.Item == "Benadryl")
+            {
+                <tr>
+                    <td colspan="5">
+                        <strong>Description:</strong> Benadryl is an antihistamine that is used to relieve symptoms of allergy, hay fever, and the common cold. It can also be used to treat itching and swelling caused by chronic urticaria (hives).
+                        <br />
+                        <img src="https://images.apollo247.in/pub/media/catalog/product/b/e/ben0053_1.jpg" alt="Benadryl  Image" width="176" height="176" />
+                    </td>
+                </tr>
+            }
+            @if (item.Item == "Ciprofloxacin")
+            {
+                <tr>
+                    <td colspan="5">
+                        <strong>Description:</strong> Ciprofloxacin is an antibiotic that is used to treat a variety of bacterial infections. It works by stopping the growth of bacteria. This medication is commonly used to treat infections of the skin, lungs, urinary tract, and other organs.
+                        <br />
+                        <img src="https://s.turbifycdn.com/aah/yhst-135855760451349/ciprofloxacin-250mg-tab-100-tabs-manufacture-may-vary-31.jpg" alt="Ciprofloxacin" width="176" height="176" />
+                    </td>
+                </tr>
+            }
+
+            totalCost += item.CostPerItem * item.Quantity; // Add the CostPerItem value to the total cost
+        }
+    </tbody>
+</table>
+
+<h4>Total Cost of Items:</h4>
+<p id="totalCostDisplay">@totalCost</p>
+
+<a href="http://localhost:7679/Home/Bill?cmd=_xclick&business=YOUR_PAYPAL_EMAIL&item_name=Payment%20for%20Items&amount=@totalCost&currency_code=USD" class="btn btn-primary">Pay with PayPal</a>
+
+@section Scripts {
+    <script>
+        function increaseQuantity(itemId) {
+            var quantityInput = $('#Quantity_' + itemId);
+            var currentQuantity = parseInt(quantityInput.val()) || 0;
+            quantityInput.val(currentQuantity + 1);
+
+            updateTotalCost(itemId);
+        }
+
+        function decreaseQuantity(itemId) {
+            var quantityInput = $('#Quantity_' + itemId);
+            var currentQuantity = parseInt(quantityInput.val()) || 0;
+            if (currentQuantity > 0) {
+                quantityInput.val(currentQuantity - 1);
+                updateTotalCost(itemId);
+            }
+        }
+
+        function updateTotalCost(itemId) {
+            var quantity = parseInt($('#Quantity_' + itemId).val()) || 0;
+            console.log(quantity); // Log the quantity value
+
+            var costPerItem = 10; // Assuming costPerItem for Concerta is always 10
+            var totalCost = quantity * costPerItem;
+            $('#TotalCost_' + itemId).text(totalCost.toFixed(2));
+
+            // Recalculate total cost
+            var newTotalCost = 0;
+            $('[id^=TotalCost_]').each(function () {
+                newTotalCost += parseFloat($(this).text());
+            });
+
+            $('#totalCostDisplay').text(newTotalCost.toFixed(2));
+        }
+
+        $(function () {
+            // Handle click event on the image link
+            $('#itemImageLink').click(function (e) {
+                e.preventDefault(); // Prevent the default behavior of the link
+
+                // Set the selected item to 'Concerta'
+                $('#selectedItem').val('Concerta');
+
+                // Trigger form submission
+                $('form').submit();
+            });
+        });
+    </script>
+}
+
+
+<style>
+    /* CSS styles */
+    body {
+        background-color: #f8f9fa;
+        color: #212529;
+        font-family: 'Arial', sans-serif;
+    }
+
+    h1 {
+        color: #000;
+        font-size: 24px;
+        margin-bottom: 20px;
+    }
+
+    .table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 20px;
+    }
+
+        .table th,
+        .table td {
+            padding: 10px;
+            text-align: left;
+            vertical-align: top;
+            border-top: 1px solid #dee2e6;
+        }
+
+        .table th {
+            background-color: #f1f1f1;
+            font-weight: bold;
+        }
+
+    .btn {
+        color: #fff;
+        text-decoration: none;
+        margin-right: 10px;
+        border-radius: 5px;
+        padding: 5px 10px;
+        font-weight: bold;
+        transition: background-color 0.3s ease;
+    }
+
+    .btn-primary {
+        background-color: #007bff;
+        border-color: #007bff;
+    }
+
+    .btn-secondary {
+        background-color: #6c757d;
+        border-color: #6c757d;
+    }
+
+    .btn-danger {
+        background-color: #dc3545;
+        border-color: #dc3545;
+    }
+
+    .btn:hover {
+        text-decoration: none;
+        background-color: #0056b3;
+        border-color: #0056b3;
+    }
+
+    .input-group input {
+        font-size: 16px; /* Adjust the font size as needed */
+        background-color: #fff; /* Set the background color to white */
+        color: #000; /* Set the text color to black */
+    }
+</style>

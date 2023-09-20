@@ -1,0 +1,42 @@
+  public IActionResult GetHTMLPageAsPDF()
+  {
+      try
+      {
+          List<ItemsLead> itemsLead = FetchItemsLead();
+
+          var htmlContent = "<html><body>";
+
+          decimal totalCost = 0; // Initialize total cost variable
+
+          foreach (var item in itemsLead)
+          {
+              htmlContent += $"<div>Item: {item.Item}</div>";
+              htmlContent += $"<div>Quantity: {item.Quantity}</div>";
+              htmlContent += $"<div>Cost Per Item: {item.CostPerItem}</div>";
+              htmlContent += "<hr />";
+
+              totalCost += item.CostPerItem; // Add cost of item to total cost
+          }
+
+          htmlContent += $"<div>Total Cost: {totalCost}</div>"; // Add total cost to the HTML
+
+          htmlContent += "</body></html>";
+
+          var Renderer = new IronPdf.ChromePdfRenderer();
+
+          using (var PDF = Renderer.RenderHtmlAsPdf(htmlContent))
+          {
+              var contentLength = PDF.BinaryData.Length;
+
+              Response.Headers["Content-Length"] = contentLength.ToString();
+              Response.Headers.Add("Content-Disposition", "inline; filename=Document.pdf"); // Changed to inline
+
+              return File(PDF.BinaryData, "application/pdf");
+          }
+      }
+      catch (Exception ex)
+      {
+          // Handle exceptions here
+          return StatusCode(500, $"An error occurred: {ex.Message}");
+      }
+  }
